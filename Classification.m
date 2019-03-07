@@ -48,9 +48,9 @@ HC_vs_EMCI_vs_LMCI_vs_AD = cat(1, HC_vs_EMCI, LMCI_vs_AD);
 
 % delete subgraph centrality
 HC_vs_EMCI_vs_LMCI_vs_AD(:, 4336:4695) = [];
-% for index = 2:size(HC_vs_EMCI_vs_LMCI_vs_AD, 2)
-%     HC_vs_EMCI_vs_LMCI_vs_AD(:, index) = mapminmax(HC_vs_EMCI_vs_LMCI_vs_AD(:, index)')';
-% end
+for index = 2:size(HC_vs_EMCI_vs_LMCI_vs_AD, 2)
+    HC_vs_EMCI_vs_LMCI_vs_AD(:, index) = mapminmax(HC_vs_EMCI_vs_LMCI_vs_AD(:, index)')';
+end
 
 for index = 1:size(HC_vs_EMCI_vs_LMCI_vs_AD, 1)
     if HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) == 1000
@@ -69,7 +69,7 @@ end
 %% Wrapper Feature selection
 if strcmp(filterFS, 'Rank')
     [Selected_train_data, SelectedFeatures_in_RankImportanceOrder] ...
-    = WrapperFeatureSelection(FilteredMatrix);
+    = WrapperFeatureSelection(HC_vs_EMCI_vs_LMCI_vs_AD);
     RankImportanceOrder_2_FeatureName(FilterdIndex, SelectedFeatures_in_RankImportanceOrder);
 elseif strcmp(filterFS, 'Predefined')
     RankImportanceOrder_2_FeatureName(FilterdIndex, 1:size(FilterdIndex, 2));

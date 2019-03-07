@@ -13,10 +13,7 @@ y = Matrix(:, 1);
 c = cvpartition(y,'KFold',10);
 opts = statset('display', 'iter',  'TolTypeFun','abs', 'TolFun', 1e-16);
 
-%% core features set that were selected from BCT analysis
-keepin_Index = [486 88 808 1528 2248 743 1653 1330 2608 4048 2733 3963];
-keepin = false(1, 360);
-keepin(keepin_Index) = true;
+keepin = X()
 
 % multi-class recognition
 fun = @(train_data,train_labels,test_data,test_labels) ...
@@ -27,7 +24,7 @@ fun = @(train_data,train_labels,test_data,test_labels) ...
 % fun = @(train_data,train_labels,test_data,test_labels) ...
 %   sum(predict(fitcsvm(train_data,train_labels,'KernelFunction','rbf'), test_data) ~= test_labels); 
 % end two-class recognition
-[fs,history] = sequentialfs(fun,X,y,'cv',c,'options',opts, 'keepin', keepin_Index);
+[fs,history] = sequentialfs(fun,X,y,'cv',c,'options',opts);
 SelectedLabel = 1:size(Matrix, 2);
 SelectedLabel = SelectedLabel(fs);
 
