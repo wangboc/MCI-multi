@@ -7,9 +7,15 @@ clc;
 addpath(genpath(pwd));
 
 %% Parameters 
-% filterFS: { 'Rank',  'Predefined'}
-filterFS = 'Rank';
-FilterdIndex = [486 88 808 1528 2248 743 1653 1330 2608 4048 2733 3963];
+% filterFS: { 'Rank',  'Predefined', 'Predefined_and_Rank'}
+filterFS = 'Predefined';
+
+% Core features set with P < 0.05
+% FilterdIndex = [486 88 808 1528 2248 746 1653 1330 2608 4048 2733 3963];
+
+% Core features set with P < 0.1
+FilterdIndex = [88 808 1528 2248 1780 746 1623 1653 1330 699 1445 2608 4048 2733 4173 3903 3219 4019 3668 4143 3823 3874 3884 3963 1025 1040 486 1437 4458 3492 5379];
+
 %% load data
 load('./Data_with_HC=24/BCTs/0.HC.mat');
 Subject_HC = subjects;
@@ -63,13 +69,17 @@ if strcmp(filterFS, 'Rank')
     [FilteredMatrix, FilterdIndex] = Filter_Feature_Rank_importance(HC_vs_EMCI_vs_LMCI_vs_AD, 1/5);
 elseif strcmp(filterFS, 'Predefined')    
     X = HC_vs_EMCI_vs_LMCI_vs_AD(:, 2:size(HC_vs_EMCI_vs_LMCI_vs_AD, 2));
-    y = HC_vs_EMCI_vs_LMCI_vs_AD(:, 1);     
+    y = HC_vs_EMCI_vs_LMCI_vs_AD(:, 1);    
     FilteredMatrix = [y X(:, FilterdIndex)];
+elseif strcmp(filterFS, 'Predefined_and_Rank')
+    X = HC_vs_EMCI_vs_LMCI_vs_AD(:, 2:size(HC_vs_EMCI_vs_LMCI_vs_AD, 2));
+    y = HC_vs_EMCI_vs_LMCI_vs_AD(:, 1);    
+    FilteredMatrix = [y X];    
 end
 %% Wrapper Feature selection
-if strcmp(filterFS, 'Rank')
+if strcmp(filterFS, 'Rank') || strcmp(filterFS, 'Predefined_and_Rank') 
     [Selected_train_data, SelectedFeatures_in_RankImportanceOrder] ...
-    = WrapperFeatureSelection(HC_vs_EMCI_vs_LMCI_vs_AD);
+    = WrapperFeatureSelection(FilteredMatrix);
     RankImportanceOrder_2_FeatureName(FilterdIndex, SelectedFeatures_in_RankImportanceOrder);
 elseif strcmp(filterFS, 'Predefined')
     RankImportanceOrder_2_FeatureName(FilterdIndex, 1:size(FilterdIndex, 2));

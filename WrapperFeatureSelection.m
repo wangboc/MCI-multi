@@ -13,8 +13,8 @@ y = Matrix(:, 1);
 c = cvpartition(y,'KFold',10);
 opts = statset('display', 'iter',  'TolTypeFun','abs', 'TolFun', 1e-16);
 
-%% core features set that were selected from BCT analysis
-keepin_Index = [486 88 808 1528 2248 743 1653 1330 2608 4048 2733 3963];
+%% core features set that were selected from BCT analysis (P<0.1)
+keepin_Index = [88 808 1528 2248 1780 746 1623 1653 1330 699 1445 2608 4048 2733 4173 3903 3219 4019 3668 4143 3823 3874 3884 3963 1025 1040 486 1437 4458 3492 5379];
 keepin = false(1, 360);
 keepin(keepin_Index) = true;
 
