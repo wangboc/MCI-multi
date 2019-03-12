@@ -8,13 +8,26 @@ addpath(genpath(pwd));
 
 %% Parameters 
 % filterFS: { 'Rank',  'Predefined', 'Predefined_and_Rank'}
-filterFS = 'Predefined';
+
+% Rank for features selection without any predefined set. Filter and
+%                      wrapper selection were both carried out.
+
+% Predefined for features parse. Features were selected previously. In this
+%                      way, filter and wrapper selection were both omitted.
+
+% Predefined_and_Rank for preset some core features and keep them as
+%                      necessary features in wrapper procedure. In this
+%                      way, filter selection, rank importance, was omitted.
+
+filterFS = 'Predefined_and_Rank';
 
 % Core features set with P < 0.05
 % FilterdIndex = [486 88 808 1528 2248 746 1653 1330 2608 4048 2733 3963];
 
 % Core features set with P < 0.1
 FilterdIndex = [88 808 1528 2248 1780 746 1623 1653 1330 699 1445 2608 4048 2733 4173 3903 3219 4019 3668 4143 3823 3874 3884 3963 1025 1040 486 1437 4458 3492 5379];
+
+
 
 %% load data
 load('./Data_with_HC=24/BCTs/0.HC.mat');
@@ -77,10 +90,14 @@ elseif strcmp(filterFS, 'Predefined_and_Rank')
     FilteredMatrix = [y X];    
 end
 %% Wrapper Feature selection
-if strcmp(filterFS, 'Rank') || strcmp(filterFS, 'Predefined_and_Rank') 
+if strcmp(filterFS, 'Rank')
     [Selected_train_data, SelectedFeatures_in_RankImportanceOrder] ...
     = WrapperFeatureSelection(FilteredMatrix);
     RankImportanceOrder_2_FeatureName(FilterdIndex, SelectedFeatures_in_RankImportanceOrder);
+elseif strcmp(filterFS, 'Predefined_and_Rank')
+    [Selected_train_data, SelectedFeatures_in_RankImportanceOrder] ...
+    = WrapperFeatureSelection(FilteredMatrix);
+    RankImportanceOrder_2_FeatureName(SelectedFeatures_in_RankImportanceOrder, 1:size(SelectedFeatures_in_RankImportanceOrde));
 elseif strcmp(filterFS, 'Predefined')
     RankImportanceOrder_2_FeatureName(FilterdIndex, 1:size(FilterdIndex, 2));
     Selected_train_data = FilteredMatrix;
