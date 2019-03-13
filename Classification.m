@@ -61,15 +61,10 @@ LMCI_vs_AD   = cat(1, Subject_LMCI, Subject_AD);
 
 HC_vs_MCI_AD = cat(1, HC_vs_MCI, Subject_AD);
 
-HC_vs_EMCI_vs_LMCI_vs_AD = cat(1, HC_vs_EMCI, LMCI_vs_AD);
+% HC_vs_EMCI_vs_LMCI_vs_AD = cat(1, HC_vs_EMCI, LMCI_vs_AD);
 
 
 
-% delete subgraph centrality
-HC_vs_EMCI_vs_LMCI_vs_AD(:, 4336:4695) = [];
-for index = 2:size(HC_vs_EMCI_vs_LMCI_vs_AD, 2)
-    HC_vs_EMCI_vs_LMCI_vs_AD(:, index) = mapminmax(HC_vs_EMCI_vs_LMCI_vs_AD(:, index)')';
-end
 
 % for index = 1:size(HC_vs_EMCI_vs_LMCI_vs_AD, 1)
 %     if HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) == 1000
@@ -78,6 +73,13 @@ end
 % end
 
 HC_vs_EMCI_LMCI = cat(1, HC_vs_EMCI, Subject_LMCI);
+
+% delete subgraph centrality
+HC_vs_EMCI_LMCI(:, 4336:4695) = [];
+for index = 2:size(HC_vs_EMCI_LMCI, 2)
+    HC_vs_EMCI_LMCI(:, index) = mapminmax(HC_vs_EMCI_LMCI(:, index)')';
+end
+
 
 
 %% Filter Feature selection
