@@ -71,22 +71,25 @@ for index = 2:size(HC_vs_EMCI_vs_LMCI_vs_AD, 2)
     HC_vs_EMCI_vs_LMCI_vs_AD(:, index) = mapminmax(HC_vs_EMCI_vs_LMCI_vs_AD(:, index)')';
 end
 
-for index = 1:size(HC_vs_EMCI_vs_LMCI_vs_AD, 1)
-    if HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) == 1000
-        HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) = 10;
-    end
-end
+% for index = 1:size(HC_vs_EMCI_vs_LMCI_vs_AD, 1)
+%     if HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) == 1000
+%         HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) = 10;
+%     end
+% end
+
+HC_vs_EMCI_LMCI = cat(1, HC_vs_EMCI, Subject_LMCI);
+
 
 %% Filter Feature selection
 if strcmp(filterFS, 'Rank')
-    [FilteredMatrix, FilterdIndex] = Filter_Feature_Rank_importance(HC_vs_EMCI_vs_LMCI_vs_AD, 1/5);
+    [FilteredMatrix, FilterdIndex] = Filter_Feature_Rank_importance(HC_vs_EMCI_LMCI, 1/5);
 elseif strcmp(filterFS, 'Predefined')    
-    X = HC_vs_EMCI_vs_LMCI_vs_AD(:, 2:size(HC_vs_EMCI_vs_LMCI_vs_AD, 2));
-    y = HC_vs_EMCI_vs_LMCI_vs_AD(:, 1);    
+    X = HC_vs_EMCI_LMCI(:, 2:size(HC_vs_EMCI_LMCI, 2));
+    y = HC_vs_EMCI_LMCI(:, 1);    
     FilteredMatrix = [y X(:, FilterdIndex)];
 elseif strcmp(filterFS, 'Predefined_and_Rank')
-    X = HC_vs_EMCI_vs_LMCI_vs_AD(:, 2:size(HC_vs_EMCI_vs_LMCI_vs_AD, 2));
-    y = HC_vs_EMCI_vs_LMCI_vs_AD(:, 1);    
+    X = HC_vs_EMCI_LMCI(:, 2:size(HC_vs_EMCI_LMCI, 2));
+    y = HC_vs_EMCI_LMCI(:, 1);    
     FilteredMatrix = [y X];    
 end
 %% Wrapper Feature selection
