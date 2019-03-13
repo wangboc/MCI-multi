@@ -72,26 +72,26 @@ HC_vs_MCI_AD = cat(1, HC_vs_MCI, Subject_AD);
 %     end
 % end
 
-HC_vs_EMCI_LMCI = cat(1, HC_vs_EMCI, Subject_LMCI);
+HC_vs_EMCI = cat(1, Subject_HC, Subject_EMCI);
 
 % delete subgraph centrality
-HC_vs_EMCI_LMCI(:, 4336:4695) = [];
-for index = 2:size(HC_vs_EMCI_LMCI, 2)
-    HC_vs_EMCI_LMCI(:, index) = mapminmax(HC_vs_EMCI_LMCI(:, index)')';
+HC_vs_EMCI(:, 4336:4695) = [];
+for index = 2:size(HC_vs_EMCI, 2)
+    HC_vs_EMCI(:, index) = mapminmax(HC_vs_EMCI(:, index)')';
 end
 
 
 
 %% Filter Feature selection
 if strcmp(filterFS, 'Rank')
-    [FilteredMatrix, FilterdIndex] = Filter_Feature_Rank_importance(HC_vs_EMCI_LMCI, 1/5);
+    [FilteredMatrix, FilterdIndex] = Filter_Feature_Rank_importance(HC_vs_EMCI, 1/5);
 elseif strcmp(filterFS, 'Predefined')    
-    X = HC_vs_EMCI_LMCI(:, 2:size(HC_vs_EMCI_LMCI, 2));
-    y = HC_vs_EMCI_LMCI(:, 1);    
+    X = HC_vs_EMCI(:, 2:size(HC_vs_EMCI, 2));
+    y = HC_vs_EMCI(:, 1);    
     FilteredMatrix = [y X(:, FilterdIndex)];
 elseif strcmp(filterFS, 'Predefined_and_Rank')
-    X = HC_vs_EMCI_LMCI(:, 2:size(HC_vs_EMCI_LMCI, 2));
-    y = HC_vs_EMCI_LMCI(:, 1);    
+    X = HC_vs_EMCI(:, 2:size(HC_vs_EMCI, 2));
+    y = HC_vs_EMCI(:, 1);    
     FilteredMatrix = [y X];    
 end
 %% Wrapper Feature selection
