@@ -19,7 +19,7 @@ addpath(genpath(pwd));
 %                      necessary features in wrapper procedure. In this
 %                      way, filter selection, rank importance, was omitted.
 
-filterFS = 'Predefined';
+filterFS = 'Predefined_and_Rank';
 
 % Core features set with P < 0.05
 % FilterdIndex = [486 88 808 1528 2248 746 1653 1330 2608 4048 2733 3963];
@@ -61,32 +61,37 @@ LMCI_vs_AD   = cat(1, Subject_LMCI, Subject_AD);
 
 HC_vs_MCI_AD = cat(1, HC_vs_MCI, Subject_AD);
 
-HC_vs_EMCI_vs_LMCI_vs_AD = cat(1, HC_vs_EMCI, LMCI_vs_AD);
+% HC_vs_EMCI_vs_LMCI_vs_AD = cat(1, HC_vs_EMCI, LMCI_vs_AD);
 
 
+
+
+% for index = 1:size(HC_vs_EMCI_vs_LMCI_vs_AD, 1)
+%     if HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) == 1000
+%         HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) = 10;
+%     end
+% end
+
+HC_vs_EMCI = cat(1, Subject_HC, Subject_EMCI);
 
 % delete subgraph centrality
-HC_vs_EMCI_vs_LMCI_vs_AD(:, 4336:4695) = [];
-for index = 2:size(HC_vs_EMCI_vs_LMCI_vs_AD, 2)
-    HC_vs_EMCI_vs_LMCI_vs_AD(:, index) = mapminmax(HC_vs_EMCI_vs_LMCI_vs_AD(:, index)')';
+HC_vs_EMCI(:, 4336:4695) = [];
+for index = 2:size(HC_vs_EMCI, 2)
+    HC_vs_EMCI(:, index) = mapminmax(HC_vs_EMCI(:, index)')';
 end
 
-for index = 1:size(HC_vs_EMCI_vs_LMCI_vs_AD, 1)
-    if HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) == 1000
-        HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) = 10;
-    end
-end
+
 
 %% Filter Feature selection
 if strcmp(filterFS, 'Rank')
-    [FilteredMatrix, FilterdIndex] = Filter_Feature_Rank_importance(HC_vs_EMCI_vs_LMCI_vs_AD, 1/5);
+    [FilteredMatrix, FilterdIndex] = Filter_Feature_Rank_importance(HC_vs_EMCI, 1/5);
 elseif strcmp(filterFS, 'Predefined')    
-    X = HC_vs_EMCI_vs_LMCI_vs_AD(:, 2:size(HC_vs_EMCI_vs_LMCI_vs_AD, 2));
-    y = HC_vs_EMCI_vs_LMCI_vs_AD(:, 1);    
+    X = HC_vs_EMCI(:, 2:size(HC_vs_EMCI, 2));
+    y = HC_vs_EMCI(:, 1);    
     FilteredMatrix = [y X(:, FilterdIndex)];
 elseif strcmp(filterFS, 'Predefined_and_Rank')
-    X = HC_vs_EMCI_vs_LMCI_vs_AD(:, 2:size(HC_vs_EMCI_vs_LMCI_vs_AD, 2));
-    y = HC_vs_EMCI_vs_LMCI_vs_AD(:, 1);    
+    X = HC_vs_EMCI(:, 2:size(HC_vs_EMCI, 2));
+    y = HC_vs_EMCI(:, 1);    
     FilteredMatrix = [y X];    
 end
 %% Wrapper Feature selection
@@ -97,7 +102,7 @@ if strcmp(filterFS, 'Rank')
 elseif strcmp(filterFS, 'Predefined_and_Rank')
     [Selected_train_data, SelectedFeatures_in_RankImportanceOrder] ...
     = WrapperFeatureSelection(FilteredMatrix);
-    RankImportanceOrder_2_FeatureName(1:size(SelectedFeatures_in_RankImportanceOrder, 2), SelectedFeatures_in_RankImportanceOrder);
+    RankImportanceOrder_2_FeatureName(SelectedFeatures_in_RankImportanceOrder, 1:size(SelectedFeatures_in_RankImportanceOrder, 2));
 elseif strcmp(filterFS, 'Predefined')
     RankImportanceOrder_2_FeatureName(FilterdIndex, 1:size(FilterdIndex, 2));
     Selected_train_data = FilteredMatrix;
