@@ -46,25 +46,6 @@ load('./Data_with_HC=24/BCTs/4.AD.mat');
 Subject_AD = subjects;
 
 HC_vs_EMCI   = cat(1, Subject_HC, Subject_EMCI);
-HC_vs_MCI    = cat(1, Subject_HC, Subject_MCI);
-HC_vs_LMCI   = cat(1, Subject_HC, Subject_LMCI);
-HC_vs_AD     = cat(1, Subject_HC, Subject_AD);
-
-EMCI_vs_MCI  = cat(1, Subject_EMCI, Subject_MCI);
-EMCI_vs_LMCI = cat(1, Subject_EMCI, Subject_LMCI);
-EMCI_vs_AD   = cat(1, Subject_EMCI, Subject_AD);
-
-MCI_vs_LMCI  = cat(1, Subject_MCI, Subject_LMCI);
-MCI_vs_AD    = cat(1, Subject_MCI, Subject_AD);
-
-LMCI_vs_AD   = cat(1, Subject_LMCI, Subject_AD);
-
-HC_vs_MCI_AD = cat(1, HC_vs_MCI, Subject_AD);
-
-% HC_vs_EMCI_vs_LMCI_vs_AD = cat(1, HC_vs_EMCI, LMCI_vs_AD);
-
-
-
 
 % for index = 1:size(HC_vs_EMCI_vs_LMCI_vs_AD, 1)
 %     if HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) == 1000
@@ -72,10 +53,8 @@ HC_vs_MCI_AD = cat(1, HC_vs_MCI, Subject_AD);
 %     end
 % end
 
-HC_vs_EMCI_LMCI = cat(1, HC_vs_EMCI, Subject_LMCI);
-
-
-trainingSet = HC_vs_EMCI_LMCI;
+HC_vs_EMCI = cat(1, Subject_HC, Subject_EMCI);
+trainingSet = HC_vs_EMCI;
 
 % delete subgraph centrality
 trainingSet(:, 4336:4695) = [];
@@ -95,13 +74,13 @@ elseif strcmp(filterFS, 'Predefined_and_Rank')
     % for predefined feature set
     X_predefined = trainingSet(:, 2:size(trainingSet, 2));
     y = trainingSet(:, 1);    
-    FilteredMatrix_predefined = [y X(:, FilterdIndex)];
+    FilteredMatrix_predefined =  X(:, FilterdIndex);
     
     % for filter feature selection
     [FilteredMatrix_all, FilterdIndex_all] = Filter_Feature_Rank_importance(trainingSet, 1/5);
     
     % combine (predefined set) with (filter feature selection set)
-    FilteredMatrix = [FilteredMatrix_predefined FilteredMatrix_all];
+    FilteredMatrix = [FilteredMatrix_all FilteredMatrix_predefined ];
     
 end
 %% Wrapper Feature selection
