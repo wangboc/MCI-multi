@@ -72,20 +72,18 @@ HC_vs_MCI_AD = cat(1, HC_vs_MCI, Subject_AD);
 %     end
 % end
 
-HC_vs_EMCI = cat(1, Subject_HC, Subject_EMCI);
+HC_vs_EMCI_LMCI = cat(1, HC_vs_EMCI, Subject_LMCI);
+
+
+trainingSet = HC_vs_EMCI_LMCI;
 
 % delete subgraph centrality
-HC_vs_EMCI(:, 4336:4695) = [];
-for index = 2:size(HC_vs_EMCI, 2)
-    HC_vs_EMCI(:, index) = mapminmax(HC_vs_EMCI(:, index)')';
+trainingSet(:, 4336:4695) = [];
+for index = 2:size(trainingSet, 2)
+    trainingSet(:, index) = mapminmax(trainingSet(:, index)')';
 end
 
-%% HC_vs_EMCI_LMCI 88%
-% FilterdIndex = [88 176 486 699 746 808 1025 1040 1165 1184 1330 1437 1445 1528 1561 1623 1653 1780 2248 2608 2733 3008 3219 3232 3478 3492 3668 3823 3874 3877 3884 3903 3963 4019 4048 4143 4173 4204 4458 5379 ];
-
-
 %% Filter Feature selection
-trainingSet = HC_vs_EMCI;
 if strcmp(filterFS, 'Rank')
     [FilteredMatrix, FilterdIndex] = Filter_Feature_Rank_importance(trainingSet, 1/5);
 elseif strcmp(filterFS, 'Predefined')    

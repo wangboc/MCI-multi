@@ -72,38 +72,46 @@ HC_vs_MCI_AD = cat(1, HC_vs_MCI, Subject_AD);
 %     end
 % end
 
-HC_vs_EMCI = cat(1, Subject_HC, Subject_EMCI);
+HC_vs_EMCI_LMCI = cat(1, HC_vs_EMCI, Subject_EMCI);
+
+
+trainingSet = HC_vs_EMCI;
 
 % delete subgraph centrality
-HC_vs_EMCI(:, 4336:4695) = [];
-for index = 2:size(HC_vs_EMCI, 2)
-    HC_vs_EMCI(:, index) = mapminmax(HC_vs_EMCI(:, index)')';
+trainingSet(:, 4336:4695) = [];
+for index = 2:size(trainingSet, 2)
+    trainingSet(:, index) = mapminmax(trainingSet(:, index)')';
 end
-
-%% HC_vs_EMCI_LMCI 88%
-% FilterdIndex = [88 176 486 699 746 808 1025 1040 1165 1184 1330 1437 1445 1528 1561 1623 1653 1780 2248 2608 2733 3008 3219 3232 3478 3492 3668 3823 3874 3877 3884 3903 3963 4019 4048 4143 4173 4204 4458 5379 ];
-
 
 %% Filter Feature selection
 if strcmp(filterFS, 'Rank')
-    [FilteredMatrix, FilterdIndex] = Filter_Feature_Rank_importance(HC_vs_EMCI, 1/5);
+    [FilteredMatrix, FilterdIndex] = Filter_Feature_Rank_importance(trainingSet, 1/5);
 elseif strcmp(filterFS, 'Predefined')    
-    X = HC_vs_EMCI(:, 2:size(HC_vs_EMCI, 2));
-    y = HC_vs_EMCI(:, 1);    
+    X = trainingSet(:, 2:size(trainingSet, 2));
+    y = trainingSet(:, 1);    
     FilteredMatrix = [y X(:, FilterdIndex)];
 elseif strcmp(filterFS, 'Predefined_and_Rank')
-    X = HC_vs_EMCI(:, 2:size(HC_vs_EMCI, 2));
-    y = HC_vs_EMCI(:, 1);    
-    FilteredMatrix = [y X];    
+    X = trainingSet(:, 2:size(trainingSet, 2));
+    % for predefined feature set
+    X_predefined = trainingSet(:, 2:size(trainingSet, 2));
+    y = trainingSet(:, 1);    
+    FilteredMatrix_predefined = [y X(:, FilterdIndex)];
+    
+    % for filter feature selection
+    [FilteredMatrix_all, FilterdIndex_all] = Filter_Feature_Rank_importance(trainingSet, 1/5);
+    
+    % combine (predefined set) with (filter feature selection set)
+    FilteredMatrix = [FilteredMatrix_predefined FilteredMatrix_all];
+    
 end
 %% Wrapper Feature selection
 if strcmp(filterFS, 'Rank')
     [Selected_train_data, SelectedFeatures_in_RankImportanceOrder] ...
-    = WrapperFeatureSelection(FilteredMatrix, false);
+    = WrapperFeatureSelection(FilteredMatrix, false, 0);
     RankImportanceOrder_2_FeatureName(FilterdIndex, SelectedFeatures_in_RankImportanceOrder);
 elseif strcmp(filterFS, 'Predefined_and_Rank')
     [Selected_train_data, SelectedFeatures_in_RankImportanceOrder] ...
-    = WrapperFeatureSelection(FilteredMatrix, true, 1:size();
+    = WrapperFeatureSelection(FilteredMatrix, false, 1:size(FilteredMatrix_predefined, 2));
     RankImportanceOrder_2_FeatureName(SelectedFeatures_in_RankImportanceOrder, 1:size(SelectedFeatures_in_RankImportanceOrder, 2));
 elseif strcmp(filterFS, 'Predefined')
     RankImportanceOrder_2_FeatureName(FilterdIndex, 1:size(FilterdIndex, 2));
