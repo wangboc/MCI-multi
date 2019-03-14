@@ -1,4 +1,4 @@
-function [SelectedTrainData, SelectedFeatures_in_RankImportanceOrder] = WrapperFeatureSelection(Matrix, keepin)
+function [SelectedTrainData, SelectedFeatures_in_RankImportanceOrder] = WrapperFeatureSelection(Matrix, need_keepin, FeaturesPredefined)
 %% Implement sequentialfs Matlab function
 % 
 % Suitable features tested may be used to train model.
@@ -15,9 +15,7 @@ opts = statset('display', 'iter',  'TolTypeFun','rel', 'TolFun', 1e-16);
 
 %% core features set that were selected from BCT analysis (P<0.1)
 
-keepin_Index = [88 808 1528 2248 1780 746 1623 1653 1330 699 1445 2608 4048 2733 4173 3903 3219 4019 3668 4143 3823 3874 3884 3963 1025 1040 486 1437 4458 3492 5379];
-keepin = false(1, 360);
-keepin(keepin_Index) = true;
+keepin_Index = FeaturesPredefined;
 
 % multi-class recognition
 fun = @(train_data,train_labels,test_data,test_labels) ...
@@ -28,7 +26,7 @@ fun = @(train_data,train_labels,test_data,test_labels) ...
 % fun = @(train_data,train_labels,test_data,test_labels) ...
 %   sum(predict(fitcsvm(train_data,train_labels,'KernelFunction','rbf'), test_data) ~= test_labels); 
 % end two-class recognition
-if keepin == true
+if need_keepin == true
     [fs,history] = sequentialfs(fun,X,y,'cv',c,'options',opts, 'keepin', keepin_Index);
 else
     [fs,history] = sequentialfs(fun,X,y,'cv',c,'options',opts);

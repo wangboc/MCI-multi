@@ -19,7 +19,7 @@ addpath(genpath(pwd));
 %                      necessary features in wrapper procedure. In this
 %                      way, filter selection, rank importance, was omitted.
 
-filterFS = 'Rank';
+filterFS = 'Predefined_and_Rank';
 
 % Core features set with P < 0.05
 % FilterdIndex = [486 88 808 1528 2248 746 1653 1330 2608 4048 2733 3963];
@@ -85,25 +85,35 @@ end
 
 
 %% Filter Feature selection
+trainingSet = HC_vs_EMCI;
 if strcmp(filterFS, 'Rank')
-    [FilteredMatrix, FilterdIndex] = Filter_Feature_Rank_importance(HC_vs_EMCI, 1/5);
+    [FilteredMatrix, FilterdIndex] = Filter_Feature_Rank_importance(trainingSet, 1/5);
 elseif strcmp(filterFS, 'Predefined')    
-    X = HC_vs_EMCI(:, 2:size(HC_vs_EMCI, 2));
-    y = HC_vs_EMCI(:, 1);    
+    X = trainingSet(:, 2:size(trainingSet, 2));
+    y = trainingSet(:, 1);    
     FilteredMatrix = [y X(:, FilterdIndex)];
 elseif strcmp(filterFS, 'Predefined_and_Rank')
-    X = HC_vs_EMCI(:, 2:size(HC_vs_EMCI, 2));
-    y = HC_vs_EMCI(:, 1);    
-    FilteredMatrix = [y X];    
+    X = trainingSet(:, 2:size(trainingSet, 2));
+    % for predefined feature set
+    X_predefined = trainingSet(:, 2:size(trainingSet, 2));
+    y = trainingSet(:, 1);    
+    FilteredMatrix_predefined = [y X(:, FilterdIndex)];
+    
+    % for filter feature selection
+    [FilteredMatrix_all, FilterdIndex_all] = Filter_Feature_Rank_importance(trainingSet, 1/5);
+    
+    % combine (predefined set) with (filter feature selection set)
+    FilteredMatrix = [FilteredMatrix_predefined FilteredMatrix_all];
+    
 end
 %% Wrapper Feature selection
 if strcmp(filterFS, 'Rank')
     [Selected_train_data, SelectedFeatures_in_RankImportanceOrder] ...
-    = WrapperFeatureSelection(FilteredMatrix, false);
+    = WrapperFeatureSelection(FilteredMatrix, false, 0);
     RankImportanceOrder_2_FeatureName(FilterdIndex, SelectedFeatures_in_RankImportanceOrder);
 elseif strcmp(filterFS, 'Predefined_and_Rank')
     [Selected_train_data, SelectedFeatures_in_RankImportanceOrder] ...
-    = WrapperFeatureSelection(FilteredMatrix, true);
+    = WrapperFeatureSelection(FilteredMatrix, false, 1:size(FilteredMatrix_predefined, 2));
     RankImportanceOrder_2_FeatureName(SelectedFeatures_in_RankImportanceOrder, 1:size(SelectedFeatures_in_RankImportanceOrder, 2));
 elseif strcmp(filterFS, 'Predefined')
     RankImportanceOrder_2_FeatureName(FilterdIndex, 1:size(FilterdIndex, 2));
