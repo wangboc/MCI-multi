@@ -53,8 +53,8 @@ HC_vs_EMCI   = cat(1, Subject_HC, Subject_EMCI);
 %     end
 % end
 
-EMCI_vs_LMCI = cat(1, Subject_EMCI, Subject_LMCI);
-trainingSet = EMCI_vs_LMCI;
+EMCI_vs_AD = cat(1, Subject_EMCI, Subject_AD);
+trainingSet = EMCI_vs_AD;
 
 
 % delete subgraph centrality
