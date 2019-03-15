@@ -53,8 +53,8 @@ HC_vs_EMCI   = cat(1, Subject_HC, Subject_EMCI);
 %     end
 % end
 
-HC_vs_AD = cat(1, Subject_HC, Subject_AD);
-trainingSet = HC_vs_AD;
+EMCI_vs_LMCI = cat(1, Subject_EMCI, Subject_LMCI);
+trainingSet = EMCI_vs_LMCI;
 
 
 % delete subgraph centrality
@@ -79,7 +79,7 @@ elseif strcmp(filterFS, 'Predefined_and_Rank')
     X_predefined = trainingSet(:, 2:size(trainingSet, 2));
     y = trainingSet(:, 1);    
     FilteredMatrix_predefined =  X(:, FilterdIndex);
-    
+    trainSet_for_coreFeatures = [FilteredMatrix_predefined y];
     % for filter feature selection
     [FilteredMatrix_all, FilterdIndex_all] = Filter_Feature_Rank_importance(trainingSet, 1/5);
     
