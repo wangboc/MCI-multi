@@ -53,14 +53,18 @@ HC_vs_EMCI   = cat(1, Subject_HC, Subject_EMCI);
 %     end
 % end
 
-HC_vs_EMCI = cat(1, Subject_HC, Subject_EMCI);
-trainingSet = HC_vs_EMCI;
+HC_vs_LMCI = cat(1, Subject_HC, Subject_LMCI);
+trainingSet = HC_vs_LMCI;
+
 
 % delete subgraph centrality
 trainingSet(:, 4336:4695) = [];
 for index = 2:size(trainingSet, 2)
     trainingSet(:, index) = mapminmax(trainingSet(:, index)')';
 end
+
+
+
 
 %% Filter Feature selection
 if strcmp(filterFS, 'Rank')
@@ -91,7 +95,11 @@ if strcmp(filterFS, 'Rank')
 elseif strcmp(filterFS, 'Predefined_and_Rank')
     [Selected_train_data, SelectedFeatures_in_RankImportanceOrder] ...
     = WrapperFeatureSelection(FilteredMatrix, false, 1:size(FilteredMatrix_predefined, 2));
-    RankImportanceOrder_2_FeatureName(SelectedFeatures_in_RankImportanceOrder, 1:size(SelectedFeatures_in_RankImportanceOrder, 2));
+    RankImportanceOrder_2_FeatureName(FilterdIndex_all, SelectedFeatures_in_RankImportanceOrder(SelectedFeatures_in_RankImportanceOrder <= round((size(trainingSet, 2) -1) * 0.2) ));
+    coreFeaturesSelected = SelectedFeatures_in_RankImportanceOrder(SelectedFeatures_in_RankImportanceOrder > round((size(trainingSet, 2) -1) * 0.2));
+    if size(coreFeaturesSelected, 2)
+        RankImportanceOrder_2_FeatureName(FilterdIndex, coreFeaturesSelected - 1083);
+    end
 elseif strcmp(filterFS, 'Predefined')
     RankImportanceOrder_2_FeatureName(FilterdIndex, 1:size(FilterdIndex, 2));
     Selected_train_data = FilteredMatrix;
