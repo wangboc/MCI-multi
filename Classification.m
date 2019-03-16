@@ -47,16 +47,19 @@ Subject_AD = subjects;
 
 HC_vs_EMCI   = cat(1, Subject_HC, Subject_EMCI);
 
-% for index = 1:size(HC_vs_EMCI_vs_LMCI_vs_AD, 1)
-%     if HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) == 1000
-%         HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) = 10;
-%     end
-% end
 
-HC_vs_EMCI_vs_LMCI_AD = cat(1, Subject_AD, Subject_EMCI);
-HC_vs_EMCI_vs_LMCI_AD = cat(1, HC_vs_EMCI_vs_LMCI_AD, Subject_LMCI);
-HC_vs_EMCI_vs_LMCI_AD = cat(1, HC_vs_EMCI_vs_LMCI_AD, Subject_HC);
-trainingSet = HC_vs_EMCI_vs_LMCI_AD;
+HC_vs_EMCI_vs_LMCI_vs_AD = cat(1, Subject_AD, Subject_EMCI);
+HC_vs_EMCI_vs_LMCI_vs_AD = cat(1, HC_vs_EMCI_vs_LMCI_vs_AD, Subject_LMCI);
+HC_vs_EMCI_vs_LMCI_vs_AD = cat(1, HC_vs_EMCI_vs_LMCI_vs_AD, Subject_HC);
+
+for index = 1:size(HC_vs_EMCI_vs_LMCI_vs_AD, 1)
+    if HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) == 1000
+        HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) = 10;
+    end
+end
+
+
+trainingSet = HC_vs_EMCI_vs_LMCI_vs_AD;
 
 
 % delete subgraph centrality
