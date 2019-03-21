@@ -30,7 +30,9 @@ function [           global_efficiency_wei, ...
                      subgraph_bin, ...
                      pagerank_bin, ...
                      kcoreness_bin, ...
-                     flow_coefficiency ...        
+                     flow_coefficiency, ...    
+                     PSW_optimal_wei, ...
+                     PSW_optimal_bin ...
 ] = BCT_calculation(data)
 %% 利用BCT工具箱，计算网络拓扑值
 %   
@@ -53,6 +55,7 @@ for index = 1:100
     end
 end
 %% 阈值处理
+PSW_optimal_wei = PSW_optimal;
 data_threshed = threshold_proportional(data, PSW_optimal);
 %% weighted network
 weighted_network = data_threshed;
@@ -89,6 +92,7 @@ for index = 1:100
     end
 end
 %% 阈值处理
+PSW_optimal_bin = PSW_optimal;
 data_threshed = threshold_proportional(data, PSW_optimal);
 %% binary network
 binarized_network = weight_conversion(data_threshed, 'binarize');

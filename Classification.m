@@ -19,7 +19,7 @@ addpath(genpath(pwd));
 %                      necessary features in wrapper procedure. In this
 %                      way, filter selection, rank importance, was omitted.
 
-filterFS = 'Predefined_and_Rank';
+filterFS = 'Predefined';
 
 % Core features set with P < 0.05
 % FilterdIndex = [486 88 808 1528 2248 746 1653 1330 2608 4048 2733 3963];
@@ -45,21 +45,21 @@ Subject_LMCI = subjects;
 load('./Data_with_HC=24/BCTs/4.AD.mat');
 Subject_AD = subjects;
 
-HC_vs_EMCI   = cat(1, Subject_HC, Subject_EMCI);
+HC_vs_AD   = cat(1, Subject_HC, Subject_AD);
 
 
 HC_vs_EMCI_vs_LMCI_vs_AD = cat(1, Subject_AD, Subject_EMCI);
 HC_vs_EMCI_vs_LMCI_vs_AD = cat(1, HC_vs_EMCI_vs_LMCI_vs_AD, Subject_LMCI);
 HC_vs_EMCI_vs_LMCI_vs_AD = cat(1, HC_vs_EMCI_vs_LMCI_vs_AD, Subject_HC);
 
-for index = 1:size(HC_vs_EMCI_vs_LMCI_vs_AD, 1)
-    if HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) == 1000
-        HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) = 10;
-    end
-end
+% for index = 1:size(HC_vs_EMCI_vs_LMCI_vs_AD, 1)
+%     if HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) == 1000
+%         HC_vs_EMCI_vs_LMCI_vs_AD(index, 1) = 10;
+%     end
+% end
 
 
-trainingSet = HC_vs_EMCI_vs_LMCI_vs_AD;
+trainingSet = HC_vs_AD;
 
 
 % delete subgraph centrality
@@ -85,6 +85,10 @@ elseif strcmp(filterFS, 'Predefined_and_Rank')
     y = trainingSet(:, 1);    
     FilteredMatrix_predefined =  X(:, FilterdIndex);
     trainSet_for_coreFeatures = [FilteredMatrix_predefined y];
+%     for i = 1:31
+%         cmd = ['set' num2str(i) '=trainSet_for_coreFeatures(:,' num2str(i) ');'];
+%         eval(cmd);
+%     end
     % for filter feature selection
     [FilteredMatrix_all, FilterdIndex_all] = Filter_Feature_Rank_importance(trainingSet, 1/5);
     
