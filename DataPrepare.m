@@ -3,7 +3,8 @@ clear;
 addpath(genpath(pwd));
 
 % classes = {  '4.AD';'0.HC'; '1.EMCI'; '2.MCI'; '3.LMCI';};
-classes = {'3.LMCI';};
+classes = {  '4.AD';'0.HC'; '1.EMCI'; };
+% classes = {'3.LMCI';};
 for index = 1:size(classes)
     path = ['./Data_with_HC=24/Connectivity/'  char(classes(index, 1)) '/'];
     files = dir(path);
